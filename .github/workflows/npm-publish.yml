@@ -25,6 +25,6 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
       - run: pnpm install
-      - run: pnpm publish --publish-branch=${{github.base_ref}}
+      - run: pnpm publish --publish-branch=${{github.ref_name}}
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
