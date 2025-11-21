@@ -49,7 +49,7 @@ class WireGuard {
 
     WG_DEBUG('Saving Config...');
     await fs.writeFile(
-      `/etc/wireguard/${wgInterface.name}.conf`,
+      `${WG_ENV.WG_CONFIG_DIR}/${wgInterface.name}.conf`,
       result.join('\n\n'),
       {
         mode: 0o600,

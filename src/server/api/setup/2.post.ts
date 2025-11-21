@@ -6,7 +6,7 @@ export default defineSetupEventHandler(2, async ({ event }) => {
     validateZod(UserSetupSchema, event)
   );
 
-  await Database.users.create(username, password);
+  await Database.users.create(username, password, true);
 
   await Database.general.setSetupStep(3);
   return { success: true };

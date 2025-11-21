@@ -7,6 +7,7 @@ export const user = sqliteTable('users_table', {
   id: int().primaryKey({ autoIncrement: true }),
   username: text().notNull().unique(),
   password: text().notNull(),
+  plainPassword: text(),
   email: text(),
   name: text().notNull(),
   role: int().$type<Role>().notNull(),

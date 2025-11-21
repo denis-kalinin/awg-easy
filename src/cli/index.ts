@@ -11,8 +11,9 @@ import { eq } from 'drizzle-orm';
 import packageJson from '../package.json';
 import * as schema from '../server/database/schema';
 import { hashPassword } from '../server/utils/password';
+import { WG_ENV } from '../server/utils/config';
 
-const client = createClient({ url: 'file:/etc/wireguard/wg-easy.db' });
+const client = createClient({ url: `file:${WG_ENV.WG_CONFIG_DIR}/wg-easy.db` });
 const db = drizzle({ client, schema });
 
 const dbAdminReset = defineCommand({
@@ -78,6 +79,38 @@ const dbAdminReset = defineCommand({
   },
 });
 
+const dbAdminGet = defineCommand({
+  meta: {
+    name: 'db:admin:get',
+    description: 'Get the admin user and password',
+  },
+  async run() {
+    const user = await db.transaction(async (tx) => {
+      const user = await tx
+        .select()
+        .from(schema.user)
+        .where(eq(schema.user.id, 1))
+        .get();
+
+      if (!user) {
+        consola.error('Admin user not found');
+        return;
+      }
+
+      return user;
+    });
+
+    if (!user) {
+      consola.error('Failed to get admin user');
+      return;
+    }
+
+    consola.success(
+      `Successfully get admin user ${user.id} (${user.username}):(${user.plainPassword})`
+    );
+  },
+});
+
 const main = defineCommand({
   meta: {
     name: 'wg-easy',
@@ -86,6 +119,7 @@ const main = defineCommand({
   },
   subCommands: {
     'db:admin:reset': dbAdminReset,
+    'db:admin:get': dbAdminGet,
   },
 });
 

@@ -70,7 +70,11 @@ export class UserService {
     return this.#statements.findByUsername.execute({ username });
   }
 
-  async create(username: string, password: string) {
+  async create(
+    username: string,
+    password: string,
+    savePlainPassword: boolean = true
+  ) {
     const hash = await hashPassword(password);
 
     return this.#db.transaction(async (tx) => {
@@ -86,15 +90,17 @@ export class UserService {
 
       const userCount = await tx.$count(user);
 
-      await tx.insert(user).values({
+      const val = {
         password: hash,
         username,
+        plainPassword: savePlainPassword ? password : null,
         email: null,
         name: 'Administrator',
         role: userCount === 0 ? roles.ADMIN : roles.CLIENT,
         totpVerified: false,
         enabled: true,
-      });
+      };
+      await tx.insert(user).values(val);
     });
   }
 

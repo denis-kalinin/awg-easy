@@ -1,0 +1,26 @@
+{
+  "name": "@awg-easy",
+  "version": "0.1.0",
+  "imports": {},
+  "compilerOptions": {
+    "lib": ["deno.window", "dom"],
+    "jsx": "react-jsx",
+    "jsxImportSource": "npm:react@^19.2",
+    "jsxImportSourceTypes": "npm:@types/react@^19.2"
+  },
+  "exports": "./src/mod.ts",
+  "test": {
+    "include": ["tests/**/*.test.ts", "src/**/*.ts", "src/**/*.tsx"]
+  },
+  "tasks": {
+    "build": "nuxt build && pnpm cli:build",
+    "build_vite": "tsc -b && vite build",
+    "dist": "vite build",
+    "test": "deno test --allow-net --allow-run --allow-write --allow-read",
+    "vite": "vite",
+    "deploy:lkt": "uzdu upload ssh --target prix.itranga.com --targetKey ~/.ssh/id_ed25519 public /opt/youroute.app/static/lkt",
+    "yandex": "uzdu metadata public && uzdu upload aws --dotenv=.yandex.env -- public kt.itranga.com:ru-central1-d:https://storage.yandexcloud.net",
+    "aws": "uzdu metadata public && uzdu upload aws --dotenv=.aws.env -- public localkeenetictest:us-east-1",
+    "uzdu-version": "uzdu -V"
+  }
+}

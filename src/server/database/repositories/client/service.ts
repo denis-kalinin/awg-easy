@@ -231,6 +231,71 @@ export class ClientService {
     });
   }
 
+  async safeCreate({
+    name,
+    expiresAt,
+    publicKey,
+  }: ClientCreateType & { publicKey: string }) {
+    const preSharedKey = await wg.generatePreSharedKey();
+    const privateKey = '';
+    return this.#db.transaction(async (tx) => {
+      const clients = await tx.query.client.findMany().execute();
+      const clientInterface = await tx.query.wgInterface
+        .findFirst({
+          where: eq(wgInterface.name, 'wg0'),
+        })
+        .execute();
+
+      if (!clientInterface) {
+        throw new Error('WireGuard interface not found');
+      }
+
+      const clientConfig = await tx.query.userConfig
+        .findFirst({
+          where: eq(userConfig.id, clientInterface.name),
+        })
+        .execute();
+
+      if (!clientConfig) {
+        throw new Error('WireGuard interface configuration not found');
+      }
+
+      const ipv4Cidr = parseCidr(clientInterface.ipv4Cidr);
+      const ipv4Address = nextIP(4, ipv4Cidr, clients);
+      const ipv6Cidr = parseCidr(clientInterface.ipv6Cidr);
+      const ipv6Address = nextIP(6, ipv6Cidr, clients);
+
+      return await tx
+        .insert(client)
+        .values({
+          name,
+          // TODO: properly assign user id
+          userId: 1,
+          interfaceId: 'wg0',
+          expiresAt,
+          privateKey,
+          publicKey,
+          preSharedKey,
+          ipv4Address,
+          ipv6Address,
+          mtu: clientConfig.defaultMtu,
+          jC: clientConfig.defaultJC,
+          jMin: clientConfig.defaultJMin,
+          jMax: clientConfig.defaultJMax,
+          i1: clientConfig.defaultI1,
+          i2: clientConfig.defaultI2,
+          i3: clientConfig.defaultI3,
+          i4: clientConfig.defaultI4,
+          i5: clientConfig.defaultI5,
+          persistentKeepalive: clientConfig.defaultPersistentKeepalive,
+          serverAllowedIps: [],
+          enabled: true,
+        })
+        .returning({ clientId: client.id })
+        .execute();
+    });
+  }
+
   toggle(id: ID, enabled: boolean) {
     return this.#statements.toggle.execute({ id, enabled });
   }

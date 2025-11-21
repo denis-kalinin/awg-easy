@@ -15,7 +15,7 @@ import { OneTimeLinkService } from './repositories/oneTimeLink/service';
 
 const DB_DEBUG = debug('Database');
 
-const client = createClient({ url: 'file:/etc/wireguard/wg-easy.db' });
+const client = createClient({ url: `file:${WG_ENV.WG_CONFIG_DIR}/wg-easy.db` });
 const db = drizzle({ client, schema });
 
 export async function connect() {
@@ -98,6 +98,14 @@ async function initialSetup(db: DBServiceType) {
     DB_DEBUG('Setting initial Allowed IPs...');
     await db.userConfigs.update({
       defaultAllowedIps: WG_INITIAL_ENV.ALLOWED_IPS,
+    });
+  }
+  if (WG_INITIAL_ENV.KEEPALIVE) {
+    DB_DEBUG(
+      `Setting initial PersistentKeepalive to ${WG_INITIAL_ENV.KEEPALIVE}`
+    );
+    await db.userConfigs.update({
+      defaultPersistentKeepalive: WG_INITIAL_ENV.KEEPALIVE,
     });
   }
 

@@ -1,5 +1,8 @@
 import debug from 'debug';
 import packageJson from '@@/package.json';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const RELEASE = 'v' + packageJson.version;
 
@@ -38,6 +41,7 @@ export const WG_ENV = {
   /** If IPv6 should be disabled */
   DISABLE_IPV6: process.env.DISABLE_IPV6 === 'true',
   WG_EXECUTABLE: await detectAwg(),
+  WG_CONFIG_DIR: process.env.WG_CONFIG_DIR ?? '/etc/wireguard',
 };
 
 export const WG_INITIAL_ENV = {
@@ -48,6 +52,9 @@ export const WG_INITIAL_ENV = {
   IPV4_CIDR: process.env.INIT_IPV4_CIDR,
   IPV6_CIDR: process.env.INIT_IPV6_CIDR,
   ALLOWED_IPS: process.env.INIT_ALLOWED_IPS?.split(',').map((x) => x.trim()),
+  KEEPALIVE: process.env.INIT_KEEPALIVE
+    ? Number.parseInt(process.env.INIT_KEEPALIVE, 10)
+    : undefined,
   HOST: process.env.INIT_HOST,
   PORT: process.env.INIT_PORT
     ? Number.parseInt(process.env.INIT_PORT, 10)
