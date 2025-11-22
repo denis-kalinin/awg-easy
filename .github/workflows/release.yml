@@ -21,7 +21,8 @@ jobs:
           draft: false
           prerelease: false
           name: ${{ steps.version.outputs.version }}
-          #tag_name: ${{github.ref_name}}
+          tag: v111
+          #tag_name: github.ref_name
           #body_path: CHANGELOG.md
           artifacts: "src/package.json"
           body: |
