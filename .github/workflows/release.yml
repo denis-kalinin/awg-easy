@@ -7,8 +7,10 @@ jobs:
     #needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@v5
       - name: version
-        run: echo "version=$(jq -r .version < ./src/package.json)" >> $GITHUB_OUTPUT
+        run: ver=$(jq -r .version < ./src/package.json) && echo "version=$ver" >> $GITHUB_OUTPUT
         id: version
       - name: pwd
         run: pwd
