@@ -15,17 +15,18 @@ jobs:
         #working-directory: ./src
         id: version
       - name: release
-        uses: actions/create-release@v1
+        uses: ncipollo/release-action@v1
         id: create_release
         with:
           draft: false
           prerelease: false
-          release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{github.ref_name}}
+          name: ${{ steps.version.outputs.version }}
+          #tag_name: ${{github.ref_name}}
           #body_path: CHANGELOG.md
+          artifacts: "src/package.json"
           body: |
             Changes in this Release
             - First Change
             - Second Change
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        #env:
+        #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
