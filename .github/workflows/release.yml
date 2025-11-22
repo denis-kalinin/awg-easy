@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  workflow_dispatch:
+defaults:
+  run:
+    working-directory: ./src
+jobs:
+  release-tar:
+    #needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: version
+        run: echo "::set-output name=version::$(jq -r .version < package.json)"
+        id: version
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          #body_path: CHANGELOG.md
+          body: |
+            Changes in this Release
+            - First Change
+            - Second Change
