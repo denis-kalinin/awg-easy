@@ -11,7 +11,7 @@ jobs:
         run: echo "version=$(jq -r .version < ./src/package.json)" >> $GITHUB_OUTPUT
         id: version
       - name: check src
-        run: ls ./src
+        run: ls src
       - name: release
         uses: ncipollo/release-action@v1
         id: create_release
@@ -21,7 +21,7 @@ jobs:
           artifactErrorsFailBuild: true
           name: ${{ steps.version.outputs.version }}
           tag: nightly-${{ github.sha }}
-          artifacts: ./src/package.json
+          artifacts: src/package.json
           body: |
             Changes in this Release
             - First Change
