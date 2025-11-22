@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: version
-        run: echo "::set-output name=version::$(jq -r .version < ./src/package.json)"
+        run: echo "version=$(jq -r .version < ./src/package.json)" >> $GITHUB_OUTPUT
         #working-directory: ./src
         id: version
       - name: release
@@ -21,7 +21,7 @@ jobs:
           draft: false
           prerelease: false
           release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{ github.ref }}
+          tag_name: ${{github.ref_name}}
           #body_path: CHANGELOG.md
           body: |
             Changes in this Release
