@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: version
-        run: echo "::set-output name=version::$(jq -r .version < package.json)"
-        working-directory: ./src
+        run: echo "::set-output name=version::$(jq -r .version < ./src/package.json)"
+        #working-directory: ./src
         id: version
       - name: release
         uses: actions/create-release@v1
