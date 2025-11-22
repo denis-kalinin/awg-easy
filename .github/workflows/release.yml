@@ -2,9 +2,6 @@ name: Release
 
 on:
   workflow_dispatch:
-#defaults:
-#  run:
-#    working-directory: src
 jobs:
   release-keenrouterwg:
     #needs: build
@@ -12,8 +9,9 @@ jobs:
     steps:
       - name: version
         run: echo "version=$(jq -r .version < ./src/package.json)" >> $GITHUB_OUTPUT
-        #working-directory: ./src
         id: version
+      - name: check src
+        run: ls ./src
       - name: release
         uses: ncipollo/release-action@v1
         id: create_release
@@ -23,9 +21,7 @@ jobs:
           artifactErrorsFailBuild: true
           name: ${{ steps.version.outputs.version }}
           tag: nightly-${{ github.sha }}
-          #tag_name: github.ref_name
-          #body_path: CHANGELOG.md
-          artifacts: "src/package.json"
+          artifacts: ./src/package.json
           body: |
             Changes in this Release
             - First Change
