@@ -20,8 +20,9 @@ jobs:
         with:
           draft: false
           prerelease: false
+          artifactErrorsFailBuild: true
           name: ${{ steps.version.outputs.version }}
-          tag: v111
+          tag: nightly-${{ github.sha }}
           #tag_name: github.ref_name
           #body_path: CHANGELOG.md
           artifacts: "src/package.json"
@@ -31,3 +32,4 @@ jobs:
             - Second Change
         #env:
         #  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        ## if ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
