@@ -10,8 +10,10 @@ jobs:
       - name: version
         run: echo "version=$(jq -r .version < ./src/package.json)" >> $GITHUB_OUTPUT
         id: version
-      - name: check src
-        run: ls src
+      - name: pwd
+        run: pwd
+      - name: check current dir
+        run: ls
       - name: release
         uses: ncipollo/release-action@v1
         id: create_release
