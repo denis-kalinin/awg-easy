@@ -2,9 +2,9 @@ name: Release
 
 on:
   workflow_dispatch:
-defaults:
-  run:
-    working-directory: ./src
+#defaults:
+#  run:
+#    working-directory: src
 jobs:
   release-tar:
     #needs: build
@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: version
         run: echo "::set-output name=version::$(jq -r .version < package.json)"
+        working-directory: ./src
         id: version
       - name: release
         uses: actions/create-release@v1
